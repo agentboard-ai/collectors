@@ -107,10 +107,6 @@ python3 collectors/collect_codex.py --diagnose-date 2026-06-01   # token account
 
 Issues and PRs welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md). To remove everything, see [UNINSTALL.md](./UNINSTALL.md).
 
-## Prior Art
-
-AgentBoard collectors are independently implemented. Public projects like [ccusage](https://github.com/ryoppippi/ccusage), Tokscale, and Vibe Usage set helpful precedents for supported sources, token semantics, and privacy expectations; collector code here is written specifically for AgentBoard's sync protocol.
-
 ## License
 
 [MIT](./LICENSE)

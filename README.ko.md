@@ -107,10 +107,6 @@ python3 collectors/collect_codex.py --diagnose-date 2026-06-01   # 토큰 집계
 
 이슈와 PR을 환영합니다 — [CONTRIBUTING.md](./CONTRIBUTING.md)를 참고하세요. 완전 제거는 [UNINSTALL.md](./UNINSTALL.md)를 확인하세요.
 
-## 참고 프로젝트
-
-AgentBoard 컬렉터는 독립적으로 구현되었습니다. [ccusage](https://github.com/ryoppippi/ccusage), Tokscale, Vibe Usage 같은 공개 프로젝트는 지원 소스, 토큰 의미론, 프라이버시 기대치 측면에서 유익한 선례를 제공했습니다. 이 저장소의 컬렉터 코드는 AgentBoard의 동기화 프로토콜 전용으로 작성되었습니다.
-
 ## 라이선스
 
 [MIT](./LICENSE)

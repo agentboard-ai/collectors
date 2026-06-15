@@ -107,10 +107,6 @@ python3 collectors/collect_codex.py --diagnose-date 2026-06-01   # análise deta
 
 Issues e PRs são bem-vindos — veja [CONTRIBUTING.md](./CONTRIBUTING.md). Para remover tudo, veja [UNINSTALL.md](./UNINSTALL.md).
 
-## Projetos de Referência
-
-Os coletores do AgentBoard são implementados de forma independente. Projetos públicos como [ccusage](https://github.com/ryoppippi/ccusage), Tokscale e Vibe Usage estabeleceram precedentes úteis em fontes suportadas, semântica de tokens e expectativas de privacidade; o código dos coletores aqui foi escrito especificamente para o protocolo de sincronização do AgentBoard.
-
 ## Licença
 
 [MIT](./LICENSE)

@@ -107,10 +107,6 @@ python3 collectors/collect_codex.py --diagnose-date 2026-06-01   # トークン�
 
 Issue や PR を歓迎します — [CONTRIBUTING.md](./CONTRIBUTING.md) をご覧ください。完全なアンインストールは [UNINSTALL.md](./UNINSTALL.md) へ。
 
-## 先行プロジェクト
-
-AgentBoard コレクターは独立に実装されています。[ccusage](https://github.com/ryoppippi/ccusage)、Tokscale、Vibe Usage などの公開プロジェクトは、対応ソース・トークン語義・プライバシー期待値の面で有益な先例です。本リポジトリのコレクターコードは AgentBoard の同期プロトコル専用に書かれています。
-
 ## ライセンス
 
 [MIT](./LICENSE)

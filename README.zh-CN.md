@@ -107,10 +107,6 @@ python3 collectors/collect_codex.py --diagnose-date 2026-06-01   # token 口径�
 
 欢迎 Issue 和 PR——见 [CONTRIBUTING.md](./CONTRIBUTING.md)。完整卸载见 [UNINSTALL.md](./UNINSTALL.md)。
 
-## 参考项目
-
-AgentBoard 采集器为独立实现。[ccusage](https://github.com/ryoppippi/ccusage)、Tokscale、Vibe Usage 等公开项目在支持来源、token 语义和隐私预期上提供了有益的先例；本仓库的采集器代码专为 AgentBoard 的同步协议编写。
-
 ## 许可证
 
 [MIT](./LICENSE)
