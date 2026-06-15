@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Compile (syntax gate, stdlib only — no install step)
+        run: python -m py_compile collectors/*.py
+
+      - name: Smoke test --summary (must exit 0 on a clean machine)
+        run: |
+          for c in collect collect_codex collect_gemini collect_opencode collect_openclaw collect_claude_cowork; do
+            echo "::group::$c --summary"
+            python collectors/$c.py --summary
+            echo "::endgroup::"
+          done
