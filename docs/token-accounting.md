@@ -21,7 +21,7 @@ provider_total = input + output + cache_read + cache_creation
 
 This matches how Anthropic accounts for usage: cache reads and writes are real consumed tokens, billed at their own rates.
 
-### Codex CLI
+### Codex
 
 Codex session logs report `input_tokens` **already including** cached input tokens. `cached_input_tokens` is an informational sub-field of input, not an addition to it.
 
@@ -40,7 +40,7 @@ python3 collectors/collect_codex.py --diagnose-range 2026-06-01 2026-06-07
 
 These print `provider_total_tokens`, `non_cache_total`, the policy era applied, and the legacy (pre-fix) figures for comparison.
 
-### Gemini CLI
+### Gemini
 
 Gemini session records carry `usageMetadata` with `totalTokenCount`, `promptTokenCount`, `candidatesTokenCount`, `cachedContentTokenCount`, `thoughtsTokenCount`, and `toolUsePromptTokenCount`.
 

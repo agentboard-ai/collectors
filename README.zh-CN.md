@@ -13,11 +13,13 @@ AgentBoard 采集器扫描 AI 编程工具在你本机已有的日志，在本�
 | 来源 | 状态 | 扫描的本地数据 |
 | --- | --- | --- |
 | Claude Code | ✅ 已支持 | `~/.claude/projects`、`$CLAUDE_CONFIG_DIR/projects` |
-| Codex CLI | ✅ 已支持 | `~/.codex/sessions`、`~/.codex/archived_sessions`、`$CODEX_HOME`、`%APPDATA%/codex` |
-| Gemini CLI | ✅ 已支持 | `~/.gemini/tmp`、`$GEMINI_CLI_HOME/tmp` |
+| ↳ Claude Cowork | ✅ 已支持 | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+| Codex | ✅ 已支持 | `~/.codex/sessions`、`~/.codex/archived_sessions`、`$CODEX_HOME`、`%APPDATA%/codex` |
+| Gemini | ✅ 已支持 | `~/.gemini/tmp`、`$GEMINI_CLI_HOME/tmp` |
 | OpenCode | ✅ 已支持 | `~/.local/share/opencode`、`$OPENCODE_HOME`、`$OPENCODE_DB` |
 | OpenClaw | ✅ 已支持 | `~/.openclaw`、`$OPENCLAW_HOME`、`$OPENCLAW_DIR` |
-| Claude Cowork | ✅ 已支持 | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+
+**来源如何归并。** 每个采集器读取的是某个工具的本地会话存储(上表路径),而不是某个特定客户端——所以只要客户端把会话写进这些路径就会被采集,不限于 CLI。在 AgentBoard 排行榜上,它们归并为五个 badge:**Claude**(Claude Code + Cowork)、**Codex**、**Gemini**、**OpenCode**、**OpenClaw**。
 
 各来源细节见 [docs/supported-sources.md](./docs/supported-sources.md)
 
@@ -67,8 +69,8 @@ irm https://agentboard.cc/install.ps1 | iex
 
 ```bash
 python3 collectors/collect.py --summary           # Claude Code
-python3 collectors/collect_codex.py --summary     # Codex CLI
-python3 collectors/collect_gemini.py --summary    # Gemini CLI
+python3 collectors/collect_codex.py --summary     # Codex
+python3 collectors/collect_gemini.py --summary    # Gemini
 python3 collectors/collect_opencode.py --summary  # OpenCode
 python3 collectors/collect_openclaw.py --summary  # OpenClaw
 ```
@@ -85,8 +87,8 @@ python3 collectors/collect_openclaw.py --summary  # OpenClaw
 不同工具的 token 报告方式不同。AgentBoard 同时保存 provider 自己的总量和完整细分，保证榜单数字与官方用量面板对得上：
 
 - **Claude Code / Cowork / OpenCode / OpenClaw** —— cache token 是独立字段；`provider_total = input + output + cache_read + cache_creation`。
-- **Codex CLI** —— 日志中的 input 已包含 cache token；`provider_total = input + output`。cache 字段仅作细分展示，绝不重复计算。
-- **Gemini CLI** —— 直接使用 provider 的 `totalTokenCount`；Gemini 不报告 cache 创建。
+- **Codex** —— 日志中的 input 已包含 cache token；`provider_total = input + output`。cache 字段仅作细分展示，绝不重复计算。
+- **Gemini** —— 直接使用 provider 的 `totalTokenCount`；Gemini 不报告 cache 创建。
 
 所有来源都提供 `non_cache_total = provider_total − cache_read − cache_creation`，用于去 cache 对比。完整语义见 [docs/token-accounting.md](./docs/token-accounting.md)
 

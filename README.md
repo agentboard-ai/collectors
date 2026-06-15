@@ -13,11 +13,13 @@ Every line of code that touches your local logs is in this repository, written i
 | Source | Status | Local data scanned |
 | --- | --- | --- |
 | Claude Code | ✅ Supported | `~/.claude/projects`, `$CLAUDE_CONFIG_DIR/projects` |
-| Codex CLI | ✅ Supported | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex` |
-| Gemini CLI | ✅ Supported | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
+| ↳ Claude Cowork | ✅ Supported | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+| Codex | ✅ Supported | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex` |
+| Gemini | ✅ Supported | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
 | OpenCode | ✅ Supported | `~/.local/share/opencode`, `$OPENCODE_HOME`, `$OPENCODE_DB` |
 | OpenClaw | ✅ Supported | `~/.openclaw`, `$OPENCLAW_HOME`, `$OPENCLAW_DIR` |
-| Claude Cowork | ✅ Supported | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+
+**How sources map.** Each collector reads a tool's local session store (the paths above), not a specific client — so any client that writes its sessions there is collected, not just the CLI. On the AgentBoard leaderboard these roll up into five badges: **Claude** (Claude Code + Cowork), **Codex**, **Gemini**, **OpenCode**, **OpenClaw**.
 
 Details per source: [docs/supported-sources.md](./docs/supported-sources.md)
 
@@ -67,8 +69,8 @@ Every collector has a `--summary` mode that scans your logs and prints the aggre
 
 ```bash
 python3 collectors/collect.py --summary           # Claude Code
-python3 collectors/collect_codex.py --summary     # Codex CLI
-python3 collectors/collect_gemini.py --summary    # Gemini CLI
+python3 collectors/collect_codex.py --summary     # Codex
+python3 collectors/collect_gemini.py --summary    # Gemini
 python3 collectors/collect_opencode.py --summary  # OpenCode
 python3 collectors/collect_openclaw.py --summary  # OpenClaw
 ```
@@ -85,8 +87,8 @@ python3 collectors/collect_openclaw.py --summary  # OpenClaw
 Different tools report tokens differently. AgentBoard keeps both the provider's own total and a full breakdown, so leaderboard numbers match official usage dashboards:
 
 - **Claude Code / Cowork / OpenCode / OpenClaw** — cache tokens are separate fields; `provider_total = input + output + cache_read + cache_creation`.
-- **Codex CLI** — reported input already includes cached tokens; `provider_total = input + output`. Cache fields are kept for breakdown only, never double-counted.
-- **Gemini CLI** — uses the provider's `totalTokenCount`; cache creation is not reported by Gemini.
+- **Codex** — reported input already includes cached tokens; `provider_total = input + output`. Cache fields are kept for breakdown only, never double-counted.
+- **Gemini** — uses the provider's `totalTokenCount`; cache creation is not reported by Gemini.
 
 `non_cache_total = provider_total − cache_read − cache_creation` is available everywhere for cache-free comparisons. Full semantics: [docs/token-accounting.md](./docs/token-accounting.md)
 

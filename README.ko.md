@@ -13,11 +13,13 @@ AgentBoard 컬렉터는 AI 코딩 도구가 이미 사용자의 컴퓨터에 보
 | 소스 | 상태 | 스캔하는 로컬 데이터 |
 | --- | --- | --- |
 | Claude Code | ✅ 지원 | `~/.claude/projects`, `$CLAUDE_CONFIG_DIR/projects` |
-| Codex CLI | ✅ 지원 | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex` |
-| Gemini CLI | ✅ 지원 | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
+| ↳ Claude Cowork | ✅ 지원 | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+| Codex | ✅ 지원 | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex` |
+| Gemini | ✅ 지원 | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
 | OpenCode | ✅ 지원 | `~/.local/share/opencode`, `$OPENCODE_HOME`, `$OPENCODE_DB` |
 | OpenClaw | ✅ 지원 | `~/.openclaw`, `$OPENCLAW_HOME`, `$OPENCLAW_DIR` |
-| Claude Cowork | ✅ 지원 | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+
+**소스 매핑 방식.** 각 컬렉터는 특정 클라이언트가 아니라 도구의 로컬 세션 저장소(위 경로)를 읽습니다 — 따라서 CLI뿐 아니라 세션을 이 경로에 기록하는 클라이언트는 모두 수집됩니다. AgentBoard 리더보드에서는 5개의 배지로 집계됩니다: **Claude**(Claude Code + Cowork), **Codex**, **Gemini**, **OpenCode**, **OpenClaw**.
 
 소스별 상세: [docs/supported-sources.md](./docs/supported-sources.md)
 
@@ -67,8 +69,8 @@ irm https://agentboard.cc/install.ps1 | iex
 
 ```bash
 python3 collectors/collect.py --summary           # Claude Code
-python3 collectors/collect_codex.py --summary     # Codex CLI
-python3 collectors/collect_gemini.py --summary    # Gemini CLI
+python3 collectors/collect_codex.py --summary     # Codex
+python3 collectors/collect_gemini.py --summary    # Gemini
 python3 collectors/collect_opencode.py --summary  # OpenCode
 python3 collectors/collect_openclaw.py --summary  # OpenClaw
 ```
@@ -85,8 +87,8 @@ python3 collectors/collect_openclaw.py --summary  # OpenClaw
 도구마다 토큰을 보고하는 방식이 다릅니다. AgentBoard는 프로바이더 자체 합계와 전체 세부 내역을 모두 보관하므로, 리더보드 수치가 공식 사용량 대시보드와 일치합니다:
 
 - **Claude Code / Cowork / OpenCode / OpenClaw** — 캐시 토큰은 별도 필드. `provider_total = input + output + cache_read + cache_creation`.
-- **Codex CLI** — 보고되는 input에 캐시 토큰이 이미 포함됨. `provider_total = input + output`. 캐시 필드는 세부 내역 표시 전용이며 이중 계산하지 않습니다.
-- **Gemini CLI** — 프로바이더의 `totalTokenCount`를 그대로 사용. Gemini는 캐시 생성을 보고하지 않습니다.
+- **Codex** — 보고되는 input에 캐시 토큰이 이미 포함됨. `provider_total = input + output`. 캐시 필드는 세부 내역 표시 전용이며 이중 계산하지 않습니다.
+- **Gemini** — 프로바이더의 `totalTokenCount`를 그대로 사용. Gemini는 캐시 생성을 보고하지 않습니다.
 
 모든 소스에서 `non_cache_total = provider_total − cache_read − cache_creation`을 제공하여 캐시를 제외한 비교가 가능합니다. 전체 명세: [docs/token-accounting.md](./docs/token-accounting.md)
 

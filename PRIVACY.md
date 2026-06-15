@@ -16,11 +16,11 @@ Collectors scan session logs written by AI coding tools:
 | Source | Locations |
 | --- | --- |
 | Claude Code | `~/.claude/projects`, `$CLAUDE_CONFIG_DIR/projects` (JSONL transcripts) |
-| Codex CLI | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex`, `%LOCALAPPDATA%/codex` |
-| Gemini CLI | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
+| Claude Cowork | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+| Codex | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex`, `%LOCALAPPDATA%/codex` |
+| Gemini | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
 | OpenCode | `~/.local/share/opencode`, `$OPENCODE_HOME`, `$OPENCODE_DB` |
 | OpenClaw | `~/.openclaw`, `$OPENCLAW_HOME`, `$OPENCLAW_DIR` |
-| Claude Cowork | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
 | Skills (Claude Code) | `~/.claude/skills`, `~/.codex/skills`, project-level `.claude/skills` (`SKILL.md` metadata only) |
 
 Reading these files locally is necessary to compute statistics. The contents of these files — your prompts, the assistant's replies, your code — are parsed in memory and discarded. They are not stored by the collector and not transmitted.

@@ -2,6 +2,8 @@
 
 One collector script per source. All collectors share the same payload schema, CLI shape (`--summary` / `--sync` / `--daemon`), config (`~/.agentboard/config.json`), and privacy guarantees; they differ in discovery paths and log-format parsing.
 
+Collectors are keyed to each tool's local session **store**, not to a particular client — any client that writes its sessions to those paths is collected. On the AgentBoard leaderboard, sources roll up into five badges: **Claude** (Claude Code + Cowork), **Codex**, **Gemini**, **OpenCode**, **OpenClaw**.
+
 ## Claude Code — `collect.py`
 
 - **Discovery:** `$CLAUDE_CONFIG_DIR/projects` if set, else `~/.claude/projects`
@@ -11,15 +13,16 @@ One collector script per source. All collectors share the same payload schema, C
 - **Extras:** skill usage tracking (`SKILL.md` metadata from `~/.claude/skills`, `~/.codex/skills`, and project-level `.claude/skills`), line-change counts from Edit/Write tool calls
 - **Token policy:** cache fields separate; `provider_total = input + output + cache_read + cache_creation`
 
-## Codex CLI — `collect_codex.py`
+## Codex — `collect_codex.py`
 
 - **Discovery:** `$CODEX_HOME/sessions` if set, else `~/.codex/sessions`; also sibling `archived_sessions`; Windows: `%APPDATA%/codex/sessions`, `%LOCALAPPDATA%/codex/sessions`
+- **Client-agnostic:** reads the Codex home dir, so any Codex client that writes sessions there is included (the CLI today)
 - **Format:** JSONL session files
 - **Session namespace:** `codex:<session_id>`
 - **Extras:** replay-prefix detection (resumed sessions re-emit token counters; the collector tracks baselines and counts deltas only); `--diagnose-date` / `--diagnose-range` token diagnostics
 - **Token policy:** input already includes cache; `provider_total = input + output`
 
-## Gemini CLI — `collect_gemini.py`
+## Gemini — `collect_gemini.py`
 
 - **Discovery:** `$GEMINI_CLI_HOME/tmp` if set, else `~/.gemini/tmp`; matches `session-*.json`, `session-*.jsonl`, `chats/**/*.jsonl`
 - **Format:** JSON and JSONL session records with `usageMetadata`
@@ -47,6 +50,7 @@ One collector script per source. All collectors share the same payload schema, C
 - **Format:** JSON metadata + JSONL transcripts
 - **Session namespace:** `cowork:<session_id>`
 - **Implementation note:** imports and reuses `collect.py` (same parsing, same payload, same privacy posture)
+- **Leaderboard:** rolls up into the **Claude** badge alongside Claude Code (shown as a single source, not a separate one)
 - **Token policy:** same as Claude Code
 
 ## Common Behavior

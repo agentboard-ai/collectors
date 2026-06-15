@@ -13,11 +13,13 @@ Cada linha de código que toca seus logs locais está neste repositório, escrit
 | Fonte | Status | Dados locais escaneados |
 | --- | --- | --- |
 | Claude Code | ✅ Suportado | `~/.claude/projects`, `$CLAUDE_CONFIG_DIR/projects` |
-| Codex CLI | ✅ Suportado | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex` |
-| Gemini CLI | ✅ Suportado | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
+| ↳ Claude Cowork | ✅ Suportado | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+| Codex | ✅ Suportado | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex` |
+| Gemini | ✅ Suportado | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
 | OpenCode | ✅ Suportado | `~/.local/share/opencode`, `$OPENCODE_HOME`, `$OPENCODE_DB` |
 | OpenClaw | ✅ Suportado | `~/.openclaw`, `$OPENCLAW_HOME`, `$OPENCLAW_DIR` |
-| Claude Cowork | ✅ Suportado | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
+
+**Como as fontes se agrupam.** Cada coletor lê o armazenamento local de sessões de uma ferramenta (os caminhos acima), não um cliente específico — então qualquer cliente que grave suas sessões nesses caminhos é coletado, não apenas a CLI. No ranking do AgentBoard, eles se agrupam em cinco selos: **Claude** (Claude Code + Cowork), **Codex**, **Gemini**, **OpenCode**, **OpenClaw**.
 
 Detalhes por fonte: [docs/supported-sources.md](./docs/supported-sources.md)
 
@@ -67,8 +69,8 @@ Todo coletor tem um modo `--summary` que escaneia seus logs e imprime o JSON agr
 
 ```bash
 python3 collectors/collect.py --summary           # Claude Code
-python3 collectors/collect_codex.py --summary     # Codex CLI
-python3 collectors/collect_gemini.py --summary    # Gemini CLI
+python3 collectors/collect_codex.py --summary     # Codex
+python3 collectors/collect_gemini.py --summary    # Gemini
 python3 collectors/collect_opencode.py --summary  # OpenCode
 python3 collectors/collect_openclaw.py --summary  # OpenClaw
 ```
@@ -85,8 +87,8 @@ python3 collectors/collect_openclaw.py --summary  # OpenClaw
 Cada ferramenta reporta tokens de um jeito. O AgentBoard guarda tanto o total do próprio provedor quanto o detalhamento completo, para que os números do ranking batam com os painéis oficiais de uso:
 
 - **Claude Code / Cowork / OpenCode / OpenClaw** — tokens de cache são campos separados; `provider_total = input + output + cache_read + cache_creation`.
-- **Codex CLI** — o input reportado já inclui tokens de cache; `provider_total = input + output`. Os campos de cache existem só para detalhamento, nunca são contados duas vezes.
-- **Gemini CLI** — usa o `totalTokenCount` do provedor; o Gemini não reporta criação de cache.
+- **Codex** — o input reportado já inclui tokens de cache; `provider_total = input + output`. Os campos de cache existem só para detalhamento, nunca são contados duas vezes.
+- **Gemini** — usa o `totalTokenCount` do provedor; o Gemini não reporta criação de cache.
 
 `non_cache_total = provider_total − cache_read − cache_creation` está disponível em todas as fontes para comparações sem cache. Semântica completa: [docs/token-accounting.md](./docs/token-accounting.md)
 
