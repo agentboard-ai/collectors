@@ -2,7 +2,11 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | **한국어** | [Português (BR)](./README.pt-BR.md)
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen.svg)
+
 AI 코딩 사용량을 위한 오픈소스 로컬 컬렉터.
+
+[AgentBoard](https://agentboard.cc)(AI 코딩 사용량 리더보드)를 구동하는 오픈소스 컬렉터입니다 — [실시간으로 보기 →](https://agentboard.cc/leaderboard)
 
 AgentBoard 컬렉터는 AI 코딩 도구가 이미 사용자의 컴퓨터에 보관하고 있는 로그를 스캔하고, 로컬에서 사용량 통계로 집계한 뒤 **메타데이터만** [AgentBoard](https://agentboard.cc)에 동기화합니다. 프롬프트, 모델 응답, 소스 코드, diff, 파일 내용, 파일 경로, 터미널 출력은 절대 업로드하지 않습니다.
 

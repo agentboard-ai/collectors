@@ -2,7 +2,11 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | [한국어](./README.ko.md) | **Português (BR)**
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen.svg)
+
 Coletores locais open-source para uso de programação com IA.
+
+Parte do [AgentBoard](https://agentboard.cc), o ranking de uso de programação com IA — [veja ao vivo →](https://agentboard.cc/leaderboard)
 
 Os coletores do AgentBoard escaneiam os logs que as ferramentas de programação com IA já mantêm na sua máquina, agregam tudo localmente em estatísticas de uso e sincronizam **apenas metadados** com o [AgentBoard](https://agentboard.cc). Eles nunca enviam prompts, respostas do modelo, código-fonte, diffs, conteúdo de arquivos, caminhos de arquivos ou saída do terminal.
 

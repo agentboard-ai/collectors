@@ -2,7 +2,11 @@
 
 [English](./README.md) | **简体中文** | [日本語](./README.ja.md) | [한국어](./README.ko.md) | [Português (BR)](./README.pt-BR.md)
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen.svg)
+
 开源的 AI 编程用量本地采集器。
+
+它们是 [AgentBoard](https://agentboard.cc)（AI 编程用量排行榜）的开源采集组件 —— [查看实时榜单 →](https://agentboard.cc/leaderboard)
 
 AgentBoard 采集器扫描 AI 编程工具在你本机已有的日志，在本地聚合成用量统计，只把**元数据**同步到 [AgentBoard](https://agentboard.cc)。它**永远不会**上传提示词、模型回复、源代码、diff、文件内容、文件路径或终端输出。
 

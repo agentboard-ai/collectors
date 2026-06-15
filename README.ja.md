@@ -2,7 +2,11 @@
 
 [English](./README.md) | [简体中文](./README.zh-CN.md) | **日本語** | [한국어](./README.ko.md) | [Português (BR)](./README.pt-BR.md)
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen.svg)
+
 AI コーディング使用量のためのオープンソース・ローカルコレクター。
+
+[AgentBoard](https://agentboard.cc)（AI コーディング使用量のリーダーボード）を支えるオープンソースのコレクターです — [ライブで見る →](https://agentboard.cc/leaderboard)
 
 AgentBoard コレクターは、AI コーディングツールがすでにあなたのマシンに保存しているログをスキャンし、ローカルで使用量統計に集計して、**メタデータのみ**を [AgentBoard](https://agentboard.cc) に同期します。プロンプト、モデルの応答、ソースコード、diff、ファイル内容、ファイルパス、ターミナル出力をアップロードすることは一切ありません。
 

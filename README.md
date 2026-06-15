@@ -2,7 +2,11 @@
 
 **English** | [简体中文](./README.zh-CN.md) | [日本語](./README.ja.md) | [한국어](./README.ko.md) | [Português (BR)](./README.pt-BR.md)
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg) ![dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen.svg)
+
 Open-source local collectors for AI coding usage.
+
+Part of [AgentBoard](https://agentboard.cc), the leaderboard for AI coding usage — [see it live →](https://agentboard.cc/leaderboard)
 
 AgentBoard collectors scan the logs that AI coding tools already keep on your machine, aggregate them into usage stats, and sync **metadata only** to [AgentBoard](https://agentboard.cc). They never upload prompts, completions, source code, diffs, file contents, file paths, or terminal output.
 
