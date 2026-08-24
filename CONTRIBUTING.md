@@ -39,4 +39,4 @@ Before opening a PR, run `--summary` for every collector you touched and sanity-
 
 ## Translations
 
-READMEs exist in English (source of truth), 简体中文, 日本語, 한국어, and Português (BR). If you update `README.md`, either update all five or open an issue tagging the translation so it doesn't drift. Docs under `docs/` are English-only by design.
+READMEs exist in English (source of truth), 简体中文, 繁體中文, 日本語, 한국어, and Português (BR). If you update `README.md`, either update every translation or open an issue tagging the translation so it doesn't drift. Docs under `docs/` are English-only by design.

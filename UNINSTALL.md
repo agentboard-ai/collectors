@@ -10,6 +10,9 @@ launchctl bootout "gui/$(id -u)/cc.agentboard.claude-sync" 2>/dev/null
 launchctl bootout "gui/$(id -u)/cc.agentboard.codex-sync" 2>/dev/null
 launchctl bootout "gui/$(id -u)/cc.agentboard.gemini-sync" 2>/dev/null
 launchctl bootout "gui/$(id -u)/cc.agentboard.cowork-sync" 2>/dev/null
+launchctl bootout "gui/$(id -u)/cc.agentboard.opencode-sync" 2>/dev/null
+launchctl bootout "gui/$(id -u)/cc.agentboard.openclaw-sync" 2>/dev/null
+launchctl bootout "gui/$(id -u)/cc.agentboard.kimi-sync" 2>/dev/null
 rm -f ~/Library/LaunchAgents/cc.agentboard.*.plist
 
 # 2. Remove the Claude Code hook
@@ -45,7 +48,7 @@ irm https://agentboard.cc/uninstall.ps1 | iex
 # add -Purge to also delete config and logs
 ```
 
-Or manually: remove the "AgentBoard Claude Sync" / "AgentBoard Codex Sync" scheduled tasks, delete the AgentBoard startup registry entries, and delete `%USERPROFILE%\.agentboard`.
+Or manually: remove the `AgentBoard * Sync` scheduled tasks, delete the AgentBoard startup registry entries, and delete `%USERPROFILE%\.agentboard`.
 
 ## Server-Side Data
 

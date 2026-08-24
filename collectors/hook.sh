@@ -45,6 +45,9 @@ OPENCODE_LAUNCH_AGENT_PLIST="$HOME/Library/LaunchAgents/$OPENCODE_LAUNCH_AGENT_L
 OPENCLAW_PID_FILE="$AB_DIR/openclaw-sync.$AB_HOST_ID.pid"
 OPENCLAW_LAUNCH_AGENT_LABEL="cc.agentboard.openclaw-sync"
 OPENCLAW_LAUNCH_AGENT_PLIST="$HOME/Library/LaunchAgents/$OPENCLAW_LAUNCH_AGENT_LABEL.plist"
+KIMI_PID_FILE="$AB_DIR/kimi-sync.$AB_HOST_ID.pid"
+KIMI_LAUNCH_AGENT_LABEL="cc.agentboard.kimi-sync"
+KIMI_LAUNCH_AGENT_PLIST="$HOME/Library/LaunchAgents/$KIMI_LAUNCH_AGENT_LABEL.plist"
 COWORK_DIR="$HOME/Library/Application Support/Claude/local-agent-mode-sessions"
 COWORK_PID_FILE="$AB_DIR/cowork-sync.$AB_HOST_ID.pid"
 COWORK_LAUNCH_AGENT_LABEL="cc.agentboard.cowork-sync"
@@ -77,6 +80,12 @@ has_openclaw_data() {
     has_path_from_list "${OPENCLAW_DIR:-}" && return 0
     has_path_from_list "${OPENCLAW_HOME:-}" && return 0
     [ -d "$HOME/.openclaw" ] || [ -d "$HOME/.clawdbot" ] || [ -d "$HOME/.moltbot" ] || [ -d "$HOME/.moldbot" ]
+}
+
+has_kimi_data() {
+    has_path_from_list "${KIMI_CODE_DIR:-}" && return 0
+    has_path_from_list "${KIMI_CODE_HOME:-}" && return 0
+    [ -d "$HOME/.kimi-code/sessions" ]
 }
 
 ensure_claude_sync_daemon() {
@@ -220,6 +229,28 @@ ensure_openclaw_sync_daemon() {
 
     nohup python3 "$AB_DIR/collect_openclaw.py" --daemon >/dev/null 2>&1 &
     echo $! > "$OPENCLAW_PID_FILE"
+}
+
+ensure_kimi_sync_daemon() {
+    [ ! -f "$AB_DIR/collect_kimi.py" ] && return
+    has_kimi_data || return
+
+    if [ "$(uname -s)" = "Darwin" ] && command -v launchctl > /dev/null 2>&1; then
+        if [ -f "$KIMI_LAUNCH_AGENT_PLIST" ]; then
+            launchctl bootstrap "gui/$(id -u)" "$KIMI_LAUNCH_AGENT_PLIST" >/dev/null 2>&1 || true
+            launchctl kickstart -k "gui/$(id -u)/$KIMI_LAUNCH_AGENT_LABEL" >/dev/null 2>&1 && return
+        fi
+    fi
+
+    if [ -f "$KIMI_PID_FILE" ]; then
+        EXISTING_PID=$(cat "$KIMI_PID_FILE" 2>/dev/null || true)
+        if [ -n "$EXISTING_PID" ] && kill -0 "$EXISTING_PID" 2>/dev/null; then
+            return
+        fi
+    fi
+
+    nohup python3 "$AB_DIR/collect_kimi.py" --daemon >/dev/null 2>&1 &
+    echo $! > "$KIMI_PID_FILE"
 }
 
 # Check that we have a token (not just a claim_code)
@@ -367,6 +398,10 @@ fi
 
 if [ -f "$AB_DIR/collect_openclaw.py" ]; then
     ensure_openclaw_sync_daemon
+fi
+
+if [ -f "$AB_DIR/collect_kimi.py" ]; then
+    ensure_kimi_sync_daemon
 fi
 
 if [ -f "$AB_DIR/collect_claude_cowork.py" ] && [ -d "$COWORK_DIR" ]; then
