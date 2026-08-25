@@ -1,0 +1,11 @@
+{"type":"turn.prompt","time":"2026-08-20T09:59:00.000Z","origin":{"kind":"user"},"input":"private prompt must never leave this fixture"}
+{"type":"turn.prompt","time":"2026-08-20T09:59:00.000Z","origin":{"kind":"user"},"input":"duplicate private prompt"}
+{"type":"turn.prompt","time":"2026-08-20T09:59:10.000Z","origin":{"kind":"system_trigger"},"input":"system content"}
+{"type":"context.append_loop_event","time":"2026-08-20T09:59:20.000Z","event":{"type":"tool.call","name":"Bash","toolCallId":"call-1","args":{"command":"cat /Users/synthetic/private-project/secret.txt"}}}
+{"type":"context.append_loop_event","time":"2026-08-20T09:59:21.000Z","event":{"type":"tool.call","name":"Bash","toolCallId":"call-1","args":{"command":"duplicate secret command"}}}
+{"type":"context.append_loop_event","time":"2026-08-20T09:59:30.000Z","event":{"type":"tool.call","name":"Edit","toolCallId":"call-2","args":{"path":"/Users/synthetic/private-project/private.py","content":"private source code"}}}
+{"type":"usage.record","usageScope":"turn","time":"2026-08-20T10:00:00.000Z","model":"kimi-code/k3","usage":{"inputOther":100,"output":20,"inputCacheRead":900,"inputCacheCreation":30}}
+{"type":"usage.record","usageScope":"turn","time":"2026-08-20T10:00:00.000Z","model":"kimi-code/k3","usage":{"inputOther":100,"output":20,"inputCacheRead":900,"inputCacheCreation":30}}
+{"type":"context.append_loop_event","time":"2026-08-20T10:00:01.000Z","event":{"type":"step.end","usage":{"inputOther":100,"output":20,"inputCacheRead":900,"inputCacheCreation":30},"response":"private response"}}
+{"type":"usage.record","usageScope":"session","time":"2026-08-20T10:01:00.000Z","model":"kimi-code/k3","usage":{"inputOther":999,"output":999,"inputCacheRead":999,"inputCacheCreation":999}}
+{"type":"llm.request","time":"2026-08-20T10:02:00.000Z","prompt":"another private prompt"}

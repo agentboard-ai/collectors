@@ -16,6 +16,7 @@ FILES=(
   collect_claude_cowork.py
   collect_opencode.py
   collect_openclaw.py
+  collect_kimi.py
   hook.sh
 )
 

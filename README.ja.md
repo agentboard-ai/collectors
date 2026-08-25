@@ -20,10 +20,11 @@ AgentBoard コレクターは、AI コーディングツールがすでにあな
 | ↳ Claude Cowork | ✅ 対応済み | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
 | Codex | ✅ 対応済み | `~/.codex/sessions`、`~/.codex/archived_sessions`、`$CODEX_HOME`、`%APPDATA%/codex` |
 | Gemini | ✅ 対応済み | `~/.gemini/tmp`、`$GEMINI_CLI_HOME/tmp` |
+| Kimi Code | ✅ 対応済み | `~/.kimi-code/sessions`、`$KIMI_CODE_DIR`、`$KIMI_CODE_HOME` |
 | OpenCode | ✅ 対応済み | `~/.local/share/opencode`、`$OPENCODE_HOME`、`$OPENCODE_DB` |
 | OpenClaw | ✅ 対応済み | `~/.openclaw`、`$OPENCLAW_HOME`、`$OPENCLAW_DIR` |
 
-**ソースの集約方法。** 各コレクターは特定のクライアントではなく、ツールのローカルセッションストア(上記のパス)を読み取ります — そのため、CLI に限らず、セッションをこれらのパスに書き込むクライアントはすべて収集対象になります。AgentBoard のリーダーボードでは、5 つのバッジに集約されます:**Claude**(Claude Code + Cowork)、**Codex**、**Gemini**、**OpenCode**、**OpenClaw**。
+**ソースの集約方法。** 各コレクターは特定のクライアントではなく、ツールのローカルセッションストア(上記のパス)を読み取ります — そのため、CLI に限らず、セッションをこれらのパスに書き込むクライアントはすべて収集対象になります。AgentBoard のリーダーボードでは、6 つのバッジに集約されます:**Claude**(Claude Code + Cowork)、**Codex**、**Gemini**、**Kimi Code**、**OpenCode**、**OpenClaw**。
 
 ソースごとの詳細: [docs/supported-sources.md](./docs/supported-sources.md)
 
@@ -75,6 +76,7 @@ irm https://agentboard.cc/install.ps1 | iex
 python3 collectors/collect.py --summary           # Claude Code
 python3 collectors/collect_codex.py --summary     # Codex
 python3 collectors/collect_gemini.py --summary    # Gemini
+python3 collectors/collect_kimi.py --summary      # Kimi Code
 python3 collectors/collect_opencode.py --summary  # OpenCode
 python3 collectors/collect_openclaw.py --summary  # OpenClaw
 ```
@@ -90,7 +92,7 @@ python3 collectors/collect_openclaw.py --summary  # OpenClaw
 
 ツールによってトークンの報告方法は異なります。AgentBoard はプロバイダー自身の合計値と完全な内訳の両方を保持するため、リーダーボードの数字は公式の使用量ダッシュボードと一致します：
 
-- **Claude Code / Cowork / OpenCode / OpenClaw** — キャッシュトークンは独立フィールド。`provider_total = input + output + cache_read + cache_creation`。
+- **Claude Code / Cowork / Kimi Code / OpenCode / OpenClaw** — キャッシュトークンは独立フィールド。`provider_total = input + output + cache_read + cache_creation`。
 - **Codex** — 報告される input にはキャッシュトークンがすでに含まれます。`provider_total = input + output`。キャッシュフィールドは内訳表示専用で、二重計上はしません。
 - **Gemini** — プロバイダーの `totalTokenCount` をそのまま使用。Gemini はキャッシュ作成を報告しません。
 

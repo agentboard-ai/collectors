@@ -51,6 +51,16 @@ provider_total = totalTokenCount       # provider's own figure, used as-is
 
 Gemini does not report cache creation; `cache_creation_tokens` is always 0 for this source.
 
+### Kimi Code
+
+Kimi `usage.record` entries with `usageScope=turn` report non-cache input, output, cache reads, and cache creation as separate fields: `inputOther`, `output`, `inputCacheRead`, and `inputCacheCreation`.
+
+```
+provider_total = inputOther + output + inputCacheRead + inputCacheCreation
+```
+
+The collector ignores nested replay copies of usage and any unknown `usageScope`, so aggregated or future scope types cannot silently double-count turn usage. Kimi does not expose reasoning/tool token subtotals in the accepted records; those fields are uploaded as 0.
+
 ### OpenCode / OpenClaw
 
 Both report cache as separate usage fields (`cacheRead` / `cacheWrite`) outside of input, and may carry a provider-reported total (`totalTokens`):

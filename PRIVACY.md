@@ -19,11 +19,14 @@ Collectors scan session logs written by AI coding tools:
 | Claude Cowork | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
 | Codex | `~/.codex/sessions`, `~/.codex/archived_sessions`, `$CODEX_HOME`, `%APPDATA%/codex`, `%LOCALAPPDATA%/codex` |
 | Gemini | `~/.gemini/tmp`, `$GEMINI_CLI_HOME/tmp` |
+| Kimi Code | `~/.kimi-code/sessions/*/session_*/agents/*/wire.jsonl`, `$KIMI_CODE_DIR`, `$KIMI_CODE_HOME` |
 | OpenCode | `~/.local/share/opencode`, `$OPENCODE_HOME`, `$OPENCODE_DB` |
 | OpenClaw | `~/.openclaw`, `$OPENCLAW_HOME`, `$OPENCLAW_DIR` |
 | Skills (Claude Code) | `~/.claude/skills`, `~/.codex/skills`, project-level `.claude/skills` (`SKILL.md` metadata only) |
 
 Reading these files locally is necessary to compute statistics. The contents of these files — your prompts, the assistant's replies, your code — are parsed in memory and discarded. They are not stored by the collector and not transmitted.
+
+The Kimi collector discovers sessions with the `wire.jsonl` glob above and does not read `~/.kimi-code/credentials`, `server.token`, or `session_index.jsonl`. It reads only top-level `usage.record` entries with `usageScope=turn`, structural user-turn envelopes, and structural tool-call names/ids; prompt text, tool arguments, code, descriptions, and traces are ignored.
 
 ## What Is Uploaded
 
@@ -68,7 +71,7 @@ See [docs/data-fields.md](./docs/data-fields.md) for the complete field-by-field
 
 - A device token is created when you link a device and stored in `~/.agentboard/config.json` (file on your machine, readable by you).
 - The server stores only a **hash** of the token. Tokens can be revoked from your AgentBoard account at any time; revoked tokens are rejected on the next sync.
-- No other credentials are read or stored. Collectors never read your API keys for Claude/OpenAI/Google.
+- No other credentials are read or stored. Collectors never read your API keys for Claude/OpenAI/Google or Kimi's `credentials` / `server.token` files.
 
 ## Local State
 
@@ -94,6 +97,7 @@ python3 collectors/collect.py --summary
 # 2. Read the payload construction in source:
 #    collect.py        — build_payload / post_checkin
 #    collect_codex.py  — same structure for Codex
+#    collect_kimi.py   — Kimi wire.jsonl parsing and payload construction
 #    hook.sh           — the only thing Claude Code triggers
 
 # 3. Watch the network: collectors POST to a single endpoint (the `api` value

@@ -20,10 +20,11 @@ AgentBoard 採集器會掃描 AI 編程工具在你本機已有的日誌，在�
 | ↳ Claude Cowork | ✅ 已支援 | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
 | Codex | ✅ 已支援 | `~/.codex/sessions`、`~/.codex/archived_sessions`、`$CODEX_HOME`、`%APPDATA%/codex` |
 | Gemini | ✅ 已支援 | `~/.gemini/tmp`、`$GEMINI_CLI_HOME/tmp` |
+| Kimi Code | ✅ 已支援 | `~/.kimi-code/sessions`、`$KIMI_CODE_DIR`、`$KIMI_CODE_HOME` |
 | OpenCode | ✅ 已支援 | `~/.local/share/opencode`、`$OPENCODE_HOME`、`$OPENCODE_DB` |
 | OpenClaw | ✅ 已支援 | `~/.openclaw`、`$OPENCLAW_HOME`、`$OPENCLAW_DIR` |
 
-**來源如何歸併。** 每個採集器讀取的是某個工具的本地工作階段儲存（上表路徑），而不是某個特定用戶端——所以只要用戶端把工作階段寫進這些路徑就會被採集，不限於 CLI。在 AgentBoard 排行榜上，它們歸併為五個 badge：**Claude**（Claude Code + Cowork）、**Codex**、**Gemini**、**OpenCode**、**OpenClaw**。
+**來源如何歸併。** 每個採集器讀取的是某個工具的本地工作階段儲存（上表路徑），而不是某個特定用戶端——所以只要用戶端把工作階段寫進這些路徑就會被採集，不限於 CLI。在 AgentBoard 排行榜上，它們歸併為六個 badge：**Claude**（Claude Code + Cowork）、**Codex**、**Gemini**、**Kimi Code**、**OpenCode**、**OpenClaw**。
 
 各來源細節見 [docs/supported-sources.md](./docs/supported-sources.md)
 
@@ -75,6 +76,7 @@ irm https://agentboard.cc/install.ps1 | iex
 python3 collectors/collect.py --summary           # Claude Code
 python3 collectors/collect_codex.py --summary     # Codex
 python3 collectors/collect_gemini.py --summary    # Gemini
+python3 collectors/collect_kimi.py --summary      # Kimi Code
 python3 collectors/collect_opencode.py --summary  # OpenCode
 python3 collectors/collect_openclaw.py --summary  # OpenClaw
 ```
@@ -90,7 +92,7 @@ python3 collectors/collect_openclaw.py --summary  # OpenClaw
 
 不同工具回報 token 的方式不同。AgentBoard 同時保存 provider 自己的總量和完整細分，確保榜單數字與官方用量面板對得上：
 
-- **Claude Code / Cowork / OpenCode / OpenClaw** —— cache token 是獨立欄位；`provider_total = input + output + cache_read + cache_creation`。
+- **Claude Code / Cowork / Kimi Code / OpenCode / OpenClaw** —— cache token 是獨立欄位；`provider_total = input + output + cache_read + cache_creation`。
 - **Codex** —— 日誌中的 input 已包含 cache token；`provider_total = input + output`。cache 欄位僅作細分顯示，絕不重複計算。
 - **Gemini** —— 直接使用 provider 的 `totalTokenCount`；Gemini 不回報 cache 建立。
 

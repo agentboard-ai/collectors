@@ -2,7 +2,7 @@
 
 One collector script per source. All collectors share the same payload schema, CLI shape (`--summary` / `--sync` / `--daemon`), config (`~/.agentboard/config.json`), and privacy guarantees; they differ in discovery paths and log-format parsing.
 
-Collectors are keyed to each tool's local session **store**, not to a particular client — any client that writes its sessions to those paths is collected. On the AgentBoard leaderboard, sources roll up into five badges: **Claude** (Claude Code + Cowork), **Codex**, **Gemini**, **OpenCode**, **OpenClaw**.
+Collectors are keyed to each tool's local session **store**, not to a particular client — any client that writes its sessions to those paths is collected. On the AgentBoard leaderboard, sources roll up into six badges: **Claude** (Claude Code + Cowork), **Codex**, **Gemini**, **Kimi Code**, **OpenCode**, **OpenClaw**.
 
 ## Claude Code — `collect.py`
 
@@ -29,6 +29,15 @@ Collectors are keyed to each tool's local session **store**, not to a particular
 - **Session namespace:** `gemini:<session_id>`
 - **Extras:** uses Gemini's `projectHash` (already hashed by the tool) for project counting
 - **Token policy:** uses provider `totalTokenCount`; no cache-creation reporting
+
+## Kimi Code — `collect_kimi.py`
+
+- **Discovery:** `$KIMI_CODE_DIR`, `$KIMI_CODE_HOME`, or `~/.kimi-code`; reads only `sessions/*/session_*/agents/*/wire.jsonl`
+- **Format:** JSONL wire events; accepts only top-level `usage.record` entries with `usageScope=turn`, plus structural `turn.prompt` and `tool.call` metadata for counts
+- **Session namespace:** `kimi:<agent_id>:<session_id>`
+- **Privacy boundary:** never reads `credentials`, `server.token`, or `session_index.jsonl`; never retains prompt text, tool arguments, code, descriptions, or traces
+- **Token policy:** cache fields are separate; `provider_total = inputOther + output + inputCacheRead + inputCacheCreation`
+- **Deletion behavior:** upload/update only; it does not send account-wide inventory payloads, preventing one device from pruning sessions stored only on another device
 
 ## OpenCode — `collect_opencode.py`
 
@@ -57,6 +66,6 @@ Collectors are keyed to each tool's local session **store**, not to a particular
 
 - **Device identity:** sanitized hostname (alphanumeric/dot/dash/underscore, ≤80 chars), overridable via `$AGENTBOARD_DEVICE_NAME`; platform from `sys.platform`, overridable via `$AGENTBOARD_PLATFORM`
 - **Multi-device:** sync state is namespaced per host id, so several machines (including shared/NFS home dirs) can sync the same account without clobbering each other
-- **State:** `~/.agentboard/*-sync-state.*.json` records synced session signatures; `--force-rescan` (where supported) reprocesses everything
+- **State:** `~/.agentboard/*-sync-state.*.json` records synced session signatures; `--force-rescan` (where supported) reprocesses everything. Kimi force-rescan re-uploads but never prunes server data.
 - **Logs:** `~/.agentboard/logs/<source>-sync.log`, rotated at 10 MB
 - **Dependencies:** Python 3 standard library only, on every source

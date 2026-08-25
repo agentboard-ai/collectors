@@ -20,10 +20,11 @@ AgentBoard 采集器扫描 AI 编程工具在你本机已有的日志，在本�
 | ↳ Claude Cowork | ✅ 已支持 | `~/Library/Application Support/Claude/local-agent-mode-sessions` |
 | Codex | ✅ 已支持 | `~/.codex/sessions`、`~/.codex/archived_sessions`、`$CODEX_HOME`、`%APPDATA%/codex` |
 | Gemini | ✅ 已支持 | `~/.gemini/tmp`、`$GEMINI_CLI_HOME/tmp` |
+| Kimi Code | ✅ 已支持 | `~/.kimi-code/sessions`、`$KIMI_CODE_DIR`、`$KIMI_CODE_HOME` |
 | OpenCode | ✅ 已支持 | `~/.local/share/opencode`、`$OPENCODE_HOME`、`$OPENCODE_DB` |
 | OpenClaw | ✅ 已支持 | `~/.openclaw`、`$OPENCLAW_HOME`、`$OPENCLAW_DIR` |
 
-**来源如何归并。** 每个采集器读取的是某个工具的本地会话存储(上表路径),而不是某个特定客户端——所以只要客户端把会话写进这些路径就会被采集,不限于 CLI。在 AgentBoard 排行榜上,它们归并为五个 badge:**Claude**(Claude Code + Cowork)、**Codex**、**Gemini**、**OpenCode**、**OpenClaw**。
+**来源如何归并。** 每个采集器读取的是某个工具的本地会话存储(上表路径),而不是某个特定客户端——所以只要客户端把会话写进这些路径就会被采集,不限于 CLI。在 AgentBoard 排行榜上,它们归并为六个 badge:**Claude**(Claude Code + Cowork)、**Codex**、**Gemini**、**Kimi Code**、**OpenCode**、**OpenClaw**。
 
 各来源细节见 [docs/supported-sources.md](./docs/supported-sources.md)
 
@@ -75,6 +76,7 @@ irm https://agentboard.cc/install.ps1 | iex
 python3 collectors/collect.py --summary           # Claude Code
 python3 collectors/collect_codex.py --summary     # Codex
 python3 collectors/collect_gemini.py --summary    # Gemini
+python3 collectors/collect_kimi.py --summary      # Kimi Code
 python3 collectors/collect_opencode.py --summary  # OpenCode
 python3 collectors/collect_openclaw.py --summary  # OpenClaw
 ```
@@ -90,7 +92,7 @@ python3 collectors/collect_openclaw.py --summary  # OpenClaw
 
 不同工具的 token 报告方式不同。AgentBoard 同时保存 provider 自己的总量和完整细分，保证榜单数字与官方用量面板对得上：
 
-- **Claude Code / Cowork / OpenCode / OpenClaw** —— cache token 是独立字段；`provider_total = input + output + cache_read + cache_creation`。
+- **Claude Code / Cowork / Kimi Code / OpenCode / OpenClaw** —— cache token 是独立字段；`provider_total = input + output + cache_read + cache_creation`。
 - **Codex** —— 日志中的 input 已包含 cache token；`provider_total = input + output`。cache 字段仅作细分展示，绝不重复计算。
 - **Gemini** —— 直接使用 provider 的 `totalTokenCount`；Gemini 不报告 cache 创建。
 

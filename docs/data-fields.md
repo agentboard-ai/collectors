@@ -9,8 +9,8 @@ If a field is not in this table, it is not uploaded.
 | Field | Type | Contents | Notes |
 | --- | --- | --- | --- |
 | `token` | string | device auth token | server stores hash only; revocable from your account |
-| `session_id` | string | tool's session id, namespaced | `claude:` / `codex:` / `gemini:` / `opencode:` / `openclaw:` / `cowork:` prefix |
-| `source` | string | `claude_code`, `codex`, `gemini_cli`, `opencode`, `openclaw`, `claude_cowork` | |
+| `session_id` | string | tool's session id, namespaced | `claude:` / `codex:` / `gemini:` / `kimi:` / `opencode:` / `openclaw:` / `cowork:` prefix |
+| `source` | string | `claude_code`, `codex`, `gemini_cli`, `kimi_code`, `opencode`, `openclaw`, `claude_cowork` | |
 | `date` | string | `YYYY-MM-DD` | |
 | `device_name` | string | sanitized hostname | alphanumeric/dot/dash/underscore, ≤80 chars; override with `$AGENTBOARD_DEVICE_NAME` |
 | `platform` | string | `macos` / `win32` / `linux` | |
@@ -49,9 +49,9 @@ If a field is not in this table, it is not uploaded.
 | `sessions` | int | sessions in this payload (1) | |
 | `tool_calls` | int | total tool invocations | count only |
 | `tool_breakdown` | array | `{tool, count, percentage}` top 4 | tool **names** only (e.g. `Edit`, `Bash`) — never arguments |
-| `lines_added` | int | from edit-tool call metadata | counts, not content |
-| `lines_removed` | int | | counts, not content |
-| `lines_changed` | int | added − removed | |
+| `lines_added` | int | from edit-tool call metadata | counts, not content; Kimi uploads 0 because its safe structural events do not expose reliable line counts |
+| `lines_removed` | int | | counts, not content; Kimi uploads 0 |
+| `lines_changed` | int | added − removed | Kimi uploads 0 |
 | `projects` | int | distinct projects touched | **count only — names/paths never sent** |
 | `files_touched` | int | distinct files touched | **count only — names/paths never sent** |
 
@@ -68,6 +68,8 @@ If a field is not in this table, it is not uploaded.
 ## Inventory Mode
 
 A second payload type (`mode: "inventory"`) uploads the deduplicated list of namespaced `session_ids` per source, so the server can reconcile deleted/renamed local sessions. No other data accompanies it.
+
+Kimi is intentionally upload/update only and never sends inventory payloads. Server-side inventory pruning is currently account-wide, so a device-local Kimi inventory could delete sessions that exist only on another device.
 
 ## What You Will Not Find Here
 
