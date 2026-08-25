@@ -13,6 +13,12 @@ inventory (mode: "inventory"), because the server prunes sessions missing
 from an inventory account-wide and cannot yet tell "deleted by the user"
 apart from "lives on another device". Re-enable only after the server
 supports device-scoped inventories.
+
+Starting with the 2026-08-25 release, every uploaded session/day is an
+authoritative snapshot of its existing wire.jsonl contents. If an existing
+file is shortened, the next upload intentionally follows the smaller local
+snapshot. If a file disappears entirely, its server rows are retained because
+this collector deliberately does not send an account-wide inventory.
 """
 
 import glob
@@ -34,9 +40,9 @@ HUMAN_TOKENS_PER_MIN = 300
 SYNC_INTERVAL_SECS = 300
 IDLE_GAP_SECS = 10 * 60
 SESSION_TAIL_SECS = 2 * 60
-AGENTBOARD_SCRIPT_RELEASE = "2026-08-21"
+AGENTBOARD_SCRIPT_RELEASE = "2026-08-25"
 __version__ = AGENTBOARD_SCRIPT_RELEASE
-STATE_VERSION = f"{AGENTBOARD_SCRIPT_RELEASE}:kimi.3"
+STATE_VERSION = f"{AGENTBOARD_SCRIPT_RELEASE}:kimi.4"
 COMMON_CA_BUNDLE_PATHS = (
     "/etc/ssl/cert.pem",
     "/private/etc/ssl/cert.pem",
@@ -399,6 +405,13 @@ def file_signature(path):
     return f"{stat_result.st_mtime_ns}:{stat_result.st_size}"
 
 
+def signature_size(signature):
+    try:
+        return int(str(signature).rsplit(":", 1)[1])
+    except Exception:
+        return None
+
+
 def new_day():
     return {
         "events": [],
@@ -409,7 +422,8 @@ def new_day():
         "provider_total_tokens": 0,
         "messages": 0,
         "assistant_messages": 0,
-        "projects": {"Kimi Code"},
+        # Kimi wire logs do not expose a privacy-safe project identity.
+        "projects": set(),
         "tool_counts": defaultdict(int),
         "tool_calls": 0,
         "seen": set(),
@@ -457,6 +471,7 @@ def add_user_message(days, record):
         return
     day["seen"].add(record["fingerprint"])
     day["user_message_records"].append(record)
+    day["events"].append(record["created"].timestamp())
     day["messages"] += 1
 
 
@@ -467,6 +482,7 @@ def add_tool_call(days, record):
         return
     day["seen"].add(record["fingerprint"])
     day["tool_call_records"].append(record)
+    day["events"].append(record["created"].timestamp())
     day["tool_calls"] += 1
     day["tool_counts"][record["tool_name"]] += 1
 
@@ -630,17 +646,23 @@ def stats_from_days(days):
             "first_event_at": datetime.fromtimestamp(events[0]).astimezone().isoformat(),
             "last_event_at": datetime.fromtimestamp(events[-1]).astimezone().isoformat(),
             "engaged_windows": windows_to_payload(windows),
+            "collector_version": __version__,
         }
     return results
 
 
-def parse_all(root_dir=""):
+def parse_all_days(root_dir=""):
     days = defaultdict(new_day)
     diagnostics = {"unsupported_usage_scopes": 0}
     for session_file in iter_session_files(root_dir):
         parsed, file_diagnostics = parse_session_file(session_file)
         merge_days(days, parsed)
         diagnostics["unsupported_usage_scopes"] += file_diagnostics["unsupported_usage_scopes"]
+    return days, diagnostics
+
+
+def parse_all(root_dir=""):
+    days, diagnostics = parse_all_days(root_dir)
     return stats_from_days(days), diagnostics
 
 
@@ -697,18 +719,33 @@ def sync_mode(root_dir="", verbose=False, force_rescan=False):
     files = list(iter_session_files(root_dir))
     next_state = {}
     changed_files = []
+    shrunken_files = 0
     for session_file in files:
         try:
             signature = file_signature(session_file)
         except OSError:
             continue
         next_state[session_file] = signature
+        previous_size = signature_size(state.get(session_file))
+        current_size = signature_size(signature)
+        if (
+            previous_size is not None
+            and current_size is not None
+            and current_size < previous_size
+        ):
+            shrunken_files += 1
         if force_rescan or state_invalidated or state.get(session_file) != signature:
             changed_files.append(session_file)
 
     membership_changed = set(state) != set(next_state)
     if not changed_files and not membership_changed:
         return
+
+    if shrunken_files:
+        log_sync(
+            f"detected {shrunken_files} shortened Kimi log file(s); "
+            "server metrics will follow the current local snapshots"
+        )
 
     try:
         full_days = defaultdict(new_day)
@@ -747,9 +784,14 @@ def sync_mode(root_dir="", verbose=False, force_rescan=False):
 
 
 def summary_mode(root_dir=""):
-    parsed, diagnostics = parse_all(root_dir)
+    raw_days, diagnostics = parse_all_days(root_dir)
+    parsed = stats_from_days(raw_days)
     sessions = sorted(parsed.values(), key=lambda item: (item["date"], item["session_id"]))
     daily = {}
+    daily_tool_counts = defaultdict(lambda: defaultdict(int))
+    for (_, date_str), day in raw_days.items():
+        for tool_name, count in day["tool_counts"].items():
+            daily_tool_counts[date_str][tool_name] += count
     additive_keys = (
         "coding_time_mins",
         "ai_time_mins",
@@ -779,6 +821,9 @@ def summary_mode(root_dir=""):
         for key in additive_keys:
             daily[date_str][key] += stats[key]
         daily[date_str]["sessions"] += 1
+
+    for date_str, stats in daily.items():
+        stats["tool_breakdown"] = build_tool_breakdown(daily_tool_counts[date_str])
 
     totals = {
         "total_coding_mins": sum(item["coding_time_mins"] for item in daily.values()),
